@@ -1,6 +1,14 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Keyboard,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
@@ -10,8 +18,8 @@ export default function Login() {
   const { login: authLogin } = useAuth();
   const router = useRouter();
 
-  const handle = () => {
-    const ok = authLogin(login, password);
+  const handle = async () => {
+    const ok = await authLogin(login, password);
 
     if (ok) {
       router.replace("/(tabs)");
@@ -21,34 +29,32 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>LOGIN</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.title}>LOGIN</Text>
 
-      <TextInput
-        placeholder="login"
-        placeholderTextColor="#777"
-        style={styles.input}
-        onChangeText={setLogin}
-      />
+        <TextInput
+          placeholder="login"
+          placeholderTextColor="#777"
+          style={styles.input}
+          value={login}
+          onChangeText={setLogin}
+        />
 
-      <TextInput
-        placeholder="password"
-        placeholderTextColor="#777"
-        secureTextEntry
-        style={styles.input}
-        onChangeText={setPassword}
-      />
+        <TextInput
+          placeholder="password"
+          placeholderTextColor="#777"
+          secureTextEntry
+          style={styles.input}
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      <Pressable style={styles.btn} onPress={handle}>
-        <Text style={styles.btnText}>Увійти</Text>
-      </Pressable>
-
-      <Pressable onPress={() => router.push("/(auth)/register")}>
-        <Text style={{ color: "gold", textAlign: "center", marginTop: 10 }}>
-          Реєстрація
-        </Text>
-      </Pressable>
-    </View>
+        <Pressable style={styles.btn} onPress={handle}>
+          <Text style={styles.btnText}>Увійти</Text>
+        </Pressable>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

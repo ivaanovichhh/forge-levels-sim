@@ -1,42 +1,49 @@
 import React, { createContext, useContext, useState } from "react";
 
-type User = { login: string };
+type User = {
+  login: string;
+};
 
 type AuthContextType = {
   user: User | null;
-  login: (login: string, password: string) => boolean;
-  register: (login: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string) => boolean;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const users: { login: string; password: string }[] = [
-  { login: "admin", password: "1234" },
-];
+const users: { email: string; password: string }[] = [];
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (login: string, password: string) => {
+  const login = async (email: string, password: string) => {
+    if (email === "admin" && password === "1234") {
+      setUser({ login: email });
+      return true;
+    }
+
     const found = users.find(
-      (u) => u.login === login && u.password === password
+      (u) => u.email === email && u.password === password
     );
 
     if (found) {
-      setUser({ login: found.login });
+      setUser({ login: email });
       return true;
     }
 
     return false;
   };
 
-  const register = (login: string, password: string) => {
-    const exists = users.find((u) => u.login === login);
+  const register = (email: string, password: string) => {
+    const exists = users.find((u) => u.email === email);
+
     if (exists) return false;
 
-    users.push({ login, password });
-    setUser({ login });
+    users.push({ email, password });
+    setUser({ login: email });
+
     return true;
   };
 

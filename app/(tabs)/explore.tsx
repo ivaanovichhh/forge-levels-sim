@@ -1,75 +1,55 @@
-import { useRouter } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
-export default function ExploreScreen() {
+export default function Explore() {
   const { user, logout } = useAuth();
-  const router = useRouter();
+  const { theme, toggle } = useTheme();
 
-  const handleLogout = () => {
-    logout();
-    router.replace("/(auth)/login");
-  };
+  const isDark = theme === "dark";
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Налаштування</Text>
+    <View style={[styles.container, isDark && styles.dark]}>
+      <Text style={[styles.title, isDark && styles.darkText]}>
+        Налаштування
+      </Text>
 
-      <View style={styles.card}>
-        <Text style={styles.text}>
-          Авторизований користувач:
-        </Text>
+      <Text style={[styles.text, isDark && styles.darkText]}>
+        Користувач: {user?.login || "не авторизовано"}
+      </Text>
 
-        <Text style={styles.user}>
-          {user?.login}
+      <View style={styles.row}>
+        <Text style={[styles.text, isDark && styles.darkText]}>
+          Темна тема
         </Text>
+        <Switch value={isDark} onValueChange={toggle} />
       </View>
 
-      <Pressable style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Вийти</Text>
+      <Pressable style={styles.logout} onPress={logout}>
+        <Text style={{ color: "black", fontWeight: "bold" }}>Вийти</Text>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#111",
-    padding: 20,
-    justifyContent: "center",
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  dark: { backgroundColor: "#111" },
+  title: { fontSize: 22, fontWeight: "bold", color: "gold", marginBottom: 20 },
+  text: { fontSize: 16, color: "#333", marginBottom: 10 },
+  darkText: { color: "#fff" },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 20,
   },
-  title: {
-    color: "gold",
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  card: {
-    backgroundColor: "#222",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  text: {
-    color: "#aaa",
-    marginBottom: 5,
-  },
-  user: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  button: {
-    backgroundColor: "red",
+  logout: {
+    marginTop: 20,
+    backgroundColor: "gold",
     padding: 12,
     borderRadius: 10,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
+    alignItems: "center",
   },
 });

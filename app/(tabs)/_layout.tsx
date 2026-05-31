@@ -1,8 +1,17 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import React from "react";
+import { Tabs, useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
-export default function TabsLayout() {
+export default function TabLayout() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/(auth)/login");
+    }
+  }, [user]);
+
   return (
     <Tabs
       screenOptions={{
@@ -10,37 +19,12 @@ export default function TabsLayout() {
         headerTintColor: "gold",
         tabBarStyle: { backgroundColor: "#111" },
         tabBarActiveTintColor: "gold",
+        tabBarInactiveTintColor: "#777",
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Кузня",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="hammer" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="create"
-        options={{
-          title: "Створити",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Налаштування",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: "Кузня" }} />
+      <Tabs.Screen name="create" options={{ title: "Створити" }} />
+      <Tabs.Screen name="explore" options={{ title: "Налаштування" }} />
     </Tabs>
   );
 }
