@@ -1,36 +1,34 @@
-import React, { useState } from "react";
-import { StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useAuth } from "../../context/AuthContext";
 
-export default function SettingsScreen() {
-  const [sound, setSound] = useState(true);
-  const [dark, setDark] = useState(true);
-  const [name, setName] = useState("");
+export default function ExploreScreen() {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.replace("/(auth)/login");
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Налаштування</Text>
 
-      <TextInput
-        placeholder="Ім'я гравця"
-        placeholderTextColor="#777"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
+      <View style={styles.card}>
+        <Text style={styles.text}>
+          Авторизований користувач:
+        </Text>
 
-      <View style={styles.row}>
-        <Text style={styles.text}>Звук</Text>
-        <Switch value={sound} onValueChange={setSound} />
+        <Text style={styles.user}>
+          {user?.login}
+        </Text>
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.text}>Темна тема</Text>
-        <Switch value={dark} onValueChange={setDark} />
-      </View>
-
-      <Text style={styles.info}>
-        Гравець: {name || "немає"}
-      </Text>
+      <Pressable style={styles.button} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Вийти</Text>
+      </Pressable>
     </View>
   );
 }
@@ -40,31 +38,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#111",
     padding: 20,
+    justifyContent: "center",
   },
   title: {
     color: "gold",
-    fontSize: 22,
-    marginBottom: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
   },
-  input: {
+  card: {
     backgroundColor: "#222",
-    color: "white",
-    padding: 10,
-    marginBottom: 15,
+    padding: 15,
     borderRadius: 10,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
+    marginBottom: 20,
   },
   text: {
-    color: "white",
-    fontSize: 16,
-  },
-  info: {
     color: "#aaa",
-    marginTop: 10,
+    marginBottom: 5,
+  },
+  user: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  button: {
+    backgroundColor: "red",
+    padding: 12,
+    borderRadius: 10,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
   },
 });
