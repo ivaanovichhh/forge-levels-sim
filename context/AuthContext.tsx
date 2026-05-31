@@ -1,53 +1,47 @@
-import React, { createContext, useContext, useState } from "react";
-
-type User = {
-  login: string;
-};
+import React, { createContext, useContext } from "react";
+import { useAppStore } from "../app/store/useAppStore";
 
 type AuthContextType = {
-  user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string) => boolean;
+  user: any;
+  login: (login: string, password: string) => boolean;
+  register: (login: string, password: string) => boolean;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const users: { email: string; password: string }[] = [];
+// фейкові користувачі
+const users: { login: string; password: string }[] = [
+  { login: "admin", password: "1234" },
+  { login: "smith", password: "forge" },
+];
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser, logout } = useAppStore();
 
-  const login = async (email: string, password: string) => {
-    if (email === "admin" && password === "1234") {
-      setUser({ login: email });
-      return true;
-    }
-
+  const login = (login: string, password: string) => {
     const found = users.find(
-      (u) => u.email === email && u.password === password
+      (u) => u.login === login && u.password === password
     );
 
     if (found) {
-      setUser({ login: email });
+      setUser({ login: found.login });
       return true;
     }
 
     return false;
   };
 
-  const register = (email: string, password: string) => {
-    const exists = users.find((u) => u.email === email);
+  const register = (login: string, password: string) => {
+    const exists = users.find((u) => u.login === login);
 
     if (exists) return false;
 
-    users.push({ email, password });
-    setUser({ login: email });
+    users.push({ login, password });
+    setUser({ login });
 
     return true;
   };
-
-  const logout = () => setUser(null);
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>
@@ -57,7 +51,11 @@ export const AuthProvider = ({ children }: any) => {
 };
 
 export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
-  return ctx;
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
+
+  return context;
 };
