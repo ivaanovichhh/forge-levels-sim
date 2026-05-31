@@ -1,49 +1,35 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Switch,
-} from "react-native";
+import { StyleSheet, Switch, Text, TextInput, View } from "react-native";
 
 export default function SettingsScreen() {
-  const [darkTheme, setDarkTheme] = useState(true);
   const [sound, setSound] = useState(true);
+  const [dark, setDark] = useState(true);
+  const [name, setName] = useState("");
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Налаштування кузні
-      </Text>
+      <Text style={styles.title}>Налаштування</Text>
+
+      <TextInput
+        placeholder="Ім'я гравця"
+        placeholderTextColor="#777"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
 
       <View style={styles.row}>
-        <Text style={styles.text}>
-          Темна тема
-        </Text>
-
-        <Switch
-          value={darkTheme}
-          onValueChange={setDarkTheme}
-        />
+        <Text style={styles.text}>Звук</Text>
+        <Switch value={sound} onValueChange={setSound} />
       </View>
 
       <View style={styles.row}>
-        <Text style={styles.text}>
-          Звук молота
-        </Text>
-
-        <Switch
-          value={sound}
-          onValueChange={setSound}
-        />
+        <Text style={styles.text}>Темна тема</Text>
+        <Switch value={dark} onValueChange={setDark} />
       </View>
 
       <Text style={styles.info}>
-        Тема: {darkTheme ? "Темна" : "Світла"}
-      </Text>
-
-      <Text style={styles.info}>
-        Звук: {sound ? "Увімкнено" : "Вимкнено"}
+        Гравець: {name || "немає"}
       </Text>
     </View>
   );
@@ -52,30 +38,33 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
     backgroundColor: "#111",
+    padding: 20,
   },
-
   title: {
     color: "gold",
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 22,
     marginBottom: 20,
+    fontWeight: "bold",
   },
-
+  input: {
+    backgroundColor: "#222",
+    color: "white",
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 10,
+  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 15,
   },
-
   text: {
     color: "white",
-    fontSize: 18,
+    fontSize: 16,
   },
-
   info: {
-    color: "#ddd",
+    color: "#aaa",
     marginTop: 10,
   },
 });
